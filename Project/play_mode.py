@@ -19,20 +19,20 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         else:
-            boy.handle_event(event)
+            witch.handle_event(event)
 
 def init():
     global grass
-    global boy
+    global witch
     global balls
     running = True
 
     grass = Grass()
     game_world.add_object(grass, 0)
 
-    boy = Witch()
-    game_world.add_object(boy, 1)
-    game_world.add_collision_pair('boy:ball', boy, None)
+    witch = Witch()
+    game_world.add_object(witch, 1)
+    game_world.add_collision_pair('witch:ball', witch, None)
 
 
 
@@ -48,7 +48,7 @@ def init():
 
     for zombie in zombies:
         game_world.add_collision_pair('zombie:throwball', zombie, None)
-        game_world.add_collision_pair('boy:zombie', boy, zombie)
+        game_world.add_collision_pair('boy:zombie', witch, zombie)
 
 
 

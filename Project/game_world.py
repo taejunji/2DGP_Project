@@ -3,8 +3,6 @@ objects = [[] for _ in range(4)]
 # fill here
 collision_pairs = {}
 
-
-
 def add_object(o, depth = 0):
     objects[depth].append(o)
 

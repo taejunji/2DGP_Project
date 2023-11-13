@@ -25,15 +25,17 @@ def time_out(e):
 
 # Boy Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 20.0  # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+FALL_SPEED_KMPH = 0.0  # Km / Hour
+FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
+FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
+FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
+
+
 
 # Boy Action Speed
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 2
 
 
 
@@ -48,47 +50,63 @@ class Idle:
 
     @staticmethod
     def exit(witch, e):
-        if space_down(e):
+        if control(e):
             witch.fire_ball()
+        if space_down(e):
+            witch.jump()
         pass
 
     @staticmethod
     def do(witch):
-        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+
+        if FALL_SPEED_KMPH >= -100:
+            FALL_SPEED_KMPH -= witch.gravityaccel
+
+        witch.y += RUN_SPEED_PPS * game_framework.frame_time
+
         if get_time() - witch.wait_time > 2:
             witch.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(witch):
-        witch.image.clip_draw(int(witch.frame) * 100, witch.action * 100, 100, 100, witch.x, witch.y)
+        witch.image.clip_draw(int(witch.frame) * 327, 323 * 2, 327, 323, witch.x, witch.y)
 
 
 
-class Run:
+class Jump:
 
     @staticmethod
     def enter(witch, e):
-        witch.wait_time = get_time()
+        self.entery = FALL_SPEED_KMPH
+        witch.frame = 0
 
     @staticmethod
     def exit(witch, e):
         if space_down(e):
+            witch.jump()
+        if control(e):
             witch.fire_ball()
-
+        if time_out(e):
+            pass
         pass
 
     @staticmethod
     def do(witch):
-        # boy.frame = (boy.frame + 1) % 8
-        witch.x += witch.dir * RUN_SPEED_PPS * game_framework.frame_time
-        witch.x = clamp(25, witch.x, 1600-25)
-        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
-        if get_time() - witch.wait_time > 2:
+
+        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+
+        if FALL_SPEED_KMPH >= -100:
+            FALL_SPEED_KMPH -= witch.gravityaccel
+
+        witch.y += RUN_SPEED_PPS * game_framework.frame_time
+
+        if self.entery <= 0:
             witch.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
-    def draw(boy):
-        boy.image.clip_draw(int(boy.frame) * 100, boy.action * 100, 100, 100, boy.x, boy.y)
+    def draw(witch):
+        witch.image.clip_draw(int(witch.frame) * 100, witch.action * 100, 100, 100, witch.x, witch.y)
 
 
 
@@ -123,8 +141,8 @@ class StateMachine:
         self.witch = witch
         self.cur_state = Idle
         self.transitions = {
-            Idle: {space_down: Idle},
-            Run: {time_out: Idle, },
+            Idle: {space_down: Jump, control: Idle},
+            Jump: {control: Idle, time_out: Idle, space_down: Idle},
 
         }
 
@@ -155,11 +173,8 @@ class Witch:
     def __init__(self):
         self.x, self.y = -400, 200
         self.frame = 0
-        self.action = 3
         self.gravityaccel = 9.7
-        self.velocity = 0
-        self.image = load_image('animation_sheet.png')
-        self.font = load_font('ENCR10B.TTF', 16)
+        self.image = load_image('.image/witch.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.ball_count = 10
@@ -172,6 +187,9 @@ class Witch:
             game_world.add_object(ball)
             game_world.add_collision_pair('zombie:throwball', None, ball)
 
+    def jump(self):
+        FALL_SPEED_KMPH = 100
+
     def update(self):
         self.state_machine.update()
 
@@ -180,7 +198,7 @@ class Witch:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.x-10, self.y + 50, f'{self.ball_count:02d}', (255, 255, 0))
+
         draw_rectangle(*self.get_bb()) # 튜플을 풀어해쳐서 분리해서 인자로 제공
 
     def get_bb(self):
@@ -193,5 +211,4 @@ class Witch:
         if group == 'boy:zombie':
             quit()
             pass
-
 
