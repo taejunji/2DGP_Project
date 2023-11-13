@@ -21,16 +21,16 @@ def time_out(e):
 # time_out = lambda e : e[0] == 'TIME_OUT'
 
 
-
-
-# Boy Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-FALL_SPEED_KMPH = 0.0  # Km / Hour
+FALL_SPEED_KMPH = -10.0  # Km / Hour
 FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
 FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
 FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
 
-
+def update_Fall_speed(a,b,c,d):
+    b = (a * 1000.0 / 60.0)
+    c = (b / 60.0)
+    d = (c * PIXEL_PER_METER)
 
 # Boy Action Speed
 TIME_PER_ACTION = 0.5
@@ -50,27 +50,33 @@ class Idle:
 
     @staticmethod
     def exit(witch, e):
+
         if control(e):
             witch.fire_ball()
+
         if space_down(e):
             witch.jump()
+
         pass
 
     @staticmethod
     def do(witch):
+
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if FALL_SPEED_KMPH >= -100:
-            FALL_SPEED_KMPH -= witch.gravityaccel
+        if witch.velocity >= -50:
+            witch.updatespeed(FALL_SPEED_KMPH)
 
-        witch.y += RUN_SPEED_PPS * game_framework.frame_time
 
-        if get_time() - witch.wait_time > 2:
-            witch.state_machine.handle_event(('TIME_OUT', 0))
+        witch.y += witch.velocity * 100/ 36 / 0.3 * game_framework.frame_time
+        print(witch.velocity)
+
+        print(witch.y)
+
 
     @staticmethod
     def draw(witch):
-        witch.image.clip_draw(int(witch.frame) * 327, 323 * 2, 327, 323, witch.x, witch.y)
+        witch.image.clip_draw(int(witch.frame) * 327, 323 * 2, 327, 323, witch.x, witch.y , 100, 100)
 
 
 
@@ -78,15 +84,17 @@ class Jump:
 
     @staticmethod
     def enter(witch, e):
-        self.entery = FALL_SPEED_KMPH
+        witch.savespeed = FALL_SPEED_KMPH
         witch.frame = 0
 
     @staticmethod
     def exit(witch, e):
         if space_down(e):
             witch.jump()
+
         if control(e):
             witch.fire_ball()
+
         if time_out(e):
             pass
         pass
@@ -94,20 +102,23 @@ class Jump:
     @staticmethod
     def do(witch):
 
-        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+        if witch.frame<= 0:
+            witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if FALL_SPEED_KMPH >= -100:
-            FALL_SPEED_KMPH -= witch.gravityaccel
+        if FALL_SPEED_KMPH >= -100: pass
 
-        witch.y += RUN_SPEED_PPS * game_framework.frame_time
 
-        if self.entery <= 0:
+        witch.y += FALL_SPEED_PPS * game_framework.frame_time
+
+        if witch.savespeed <= 0:
             witch.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(witch):
-        witch.image.clip_draw(int(witch.frame) * 100, witch.action * 100, 100, 100, witch.x, witch.y)
-
+        if witch.frame == 0:
+            witch.image.clip_draw( 2 * 327, 323 * 2, 327, 323, witch.x, witch.y)
+        else:
+            witch.image.clip_draw(0 * 327, 323 * 1, 327, 323, witch.x, witch.y)
 
 
 class Sleep:
@@ -171,10 +182,12 @@ class StateMachine:
 
 class Witch:
     def __init__(self):
-        self.x, self.y = -400, 200
+        self.x, self.y = 100, 400
         self.frame = 0
-        self.gravityaccel = 9.7
-        self.image = load_image('.image/witch.png')
+        self.gravityaccel = 0.05
+        self.savespeed = 0
+        self.velocity = 0
+        self.image = load_image('image/witch.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.ball_count = 10
@@ -188,8 +201,10 @@ class Witch:
             game_world.add_collision_pair('zombie:throwball', None, ball)
 
     def jump(self):
-        FALL_SPEED_KMPH = 100
-
+        self.velocity = 25
+    def updatespeed(self,a):
+        self.velocity -= self.gravityaccel
+        a -= self.velocity
     def update(self):
         self.state_machine.update()
 
@@ -202,7 +217,7 @@ class Witch:
         draw_rectangle(*self.get_bb()) # 튜플을 풀어해쳐서 분리해서 인자로 제공
 
     def get_bb(self):
-        return self.x-20, self.y -50, self.x +20, self.y+50
+        return self.x-40, self.y -50, self.x +20, self.y+30
 
     def handle_collision(self,group, other):
         # 여기
