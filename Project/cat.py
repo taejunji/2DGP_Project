@@ -24,19 +24,22 @@ FRAMES_PER_ACTION = 2.0
 class Cat:
     images_first_cat = None
     images_second_cat = None
-    images_red = None
+    images_third_cat = None
+    images_fourth_cat = None
     def load_images(self):
         if Cat.images_first_cat == None:
             Cat.images_first_cat = load_image("image/cat_1.png")
         if Cat.images_second_cat == None:
             Cat.images_second_cat = load_image("image/cat_2.png")
-        # if Cat.images_red == None:
-        #     Cat.images_red = load_image("image/item_3.png")
+        if Cat.images_third_cat == None:
+            Cat.images_third_cat = load_image("image/cat_3.png")
+        if Cat.images_fourth_cat == None:
+            Cat.images_fourth_cat = load_image("image/cat_4.png")
 
 
     # 0 그린 1 블루 2레드
-    def __init__(self,num):
-        self.type = 0 #random.randint(0,2)
+    def __init__(self,num,type):
+        self.type = int(type) #random.randint(0,2)
         self.x = random.randint(800 * num + 850, 800 * num + 1200)
         self.y = random.randint(100, 500)
         self.load_images()
@@ -73,14 +76,17 @@ class Cat:
 
     def draw(self):
         if self.confined:
-            if self.type == 0:
+            if  self.type == 0:
                 Cat.images_first_cat.clip_draw(int(self.frame+1) * 145, 0, 145, 180, self.x, self.y,self.scale, self.scale)
                 draw_rectangle(*self.get_bb())
             elif self.type == 1:
-                Cat.images_second_cat.clip_draw(int(self.frame+1) * 145, 0, 145, 180, self.x, self.y, self.scale, self.scale)
+                Cat.images_second_cat.clip_draw(int(self.frame+1) * 155, 0, 155, 171, self.x, self.y, self.scale, self.scale)
                 draw_rectangle(*self.get_bb())
-            else :
-                Cat.images_red.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y, self.scale,self.scale)
+            elif self.type == 2:
+                Cat.images_third_cat.clip_draw(int(self.frame + 1) * 150, 0, 150, 169, self.x, self.y, self.scale,self.scale)
+                draw_rectangle(*self.get_bb())
+            elif self.type == 3 :
+                Cat.images_fourth_cat.clip_draw(int(self.frame + 1) * 147, 0, 147, 189, self.x, self.y, self.scale,self.scale)
                 draw_rectangle(*self.get_bb())
         else:
             pass
