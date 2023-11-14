@@ -2,7 +2,6 @@
 
 from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LCTRL, SDLK_RIGHT, \
     draw_rectangle
-from ball import Ball
 import game_world
 import game_framework
 
@@ -26,11 +25,6 @@ FALL_SPEED_KMPH = -10.0  # Km / Hour
 FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
 FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
 FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
-
-def update_Fall_speed(a,b,c,d):
-    b = (a * 1000.0 / 60.0)
-    c = (b / 60.0)
-    d = (c * PIXEL_PER_METER)
 
 # Boy Action Speed
 TIME_PER_ACTION = 0.5
@@ -64,9 +58,9 @@ class Idle:
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if witch.velocity >= -50:
-            witch.updatespeed(FALL_SPEED_KMPH)
-        witch.y += witch.velocity * 100/ 36 / 0.3 * game_framework.frame_time
+        if witch.velocity >= -100:
+            witch.updatespeed()
+        witch.y += witch.velocity * game_framework.frame_time * 100/ 36 / 0.3
 
 
 
@@ -80,7 +74,6 @@ class Jump:
 
     @staticmethod
     def enter(witch, e):
-        witch.savespeed = witch.velocity
         witch.frame = 0
 
     @staticmethod
@@ -100,9 +93,9 @@ class Jump:
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if witch.velocity >= -60:
-            witch.updatespeed(FALL_SPEED_KMPH)
-        witch.y += witch.velocity * 100 / 36 / 0.3 * game_framework.frame_time
+        if witch.velocity >= -100:
+            witch.updatespeed()
+        witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
         if witch.velocity <= 0:
             witch.state_machine.handle_event(('TIME_OUT', 0))
@@ -179,8 +172,7 @@ class Witch:
     def __init__(self):
         self.x, self.y = 150, 400
         self.frame = 0
-        self.gravityaccel = 0.1
-        self.savespeed = 0
+        self.gravityaccel = 5
         self.velocity = 0
         self.image = load_image('image/witch.png')
         self.state_machine = StateMachine(self)
@@ -196,10 +188,10 @@ class Witch:
             game_world.add_collision_pair('boss:bullet', None, ball)
 
     def jump(self):
-        self.velocity = 25
-    def updatespeed(self,a):
-        self.velocity -= self.gravityaccel
-        a -= self.velocity
+        self.velocity = 35
+    def updatespeed(self):
+        self.velocity -= self.gravityaccel * game_framework.frame_time * 100/ 36 / 0.3
+
     def update(self):
         self.state_machine.update()
 
