@@ -5,6 +5,7 @@ import game_world
 from background import Background
 from witch import Witch
 from ball import Ball
+from potion import Potion
 from zombie import Zombie
 from obstacle import Obstacle
 # boy = None
@@ -24,6 +25,7 @@ def init():
     global witch
     global balls
     global obstacles
+    global potions
     running = True
 
     background = Background()
@@ -32,6 +34,13 @@ def init():
     witch = Witch()
     game_world.add_object(witch, 1)
     game_world.add_collision_pair('witch:obstacle', witch, None)
+    game_world.add_collision_pair('witch:r_potion', witch, None)
+
+    potions = [Potion(i) for i in range(1,20,2)]
+    game_world.add_objects(potions, 1)
+    for potion in potions:
+        game_world.add_collision_pair('witch:r_potion', None, potion)
+
 
 
 def finish():
