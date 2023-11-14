@@ -30,8 +30,8 @@ class Obstacle:
     # 0 탑 1 바텀
     def __init__(self,num):
         self.topbottom = random.randint(0,1)
-        self.x = random.randint(800 * num + 850, 800 * num +1500)
-        self.scale_y = random.randint(300, 400)
+        self.x = random.randint(800 * num + 850, 800 * num + 1200)
+        self.scale_y = random.randint(300, 350)
 
         if self.topbottom == 0:
             self.y = 600 - self.scale_y / 2
@@ -66,5 +66,5 @@ class Obstacle:
         if group == 'witch:obstacle':
             pass
     def get_bb(self):
-        return self.x - 20, self.y-(self.scale_y/2), self.x + 20, self.y+self.scale_y/2
+        return self.x - 40, self.y-(self.scale_y/2), self.x + 40, self.y+self.scale_y/2
 
