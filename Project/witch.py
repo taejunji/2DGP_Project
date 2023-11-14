@@ -4,7 +4,7 @@ from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYU
     draw_rectangle
 import game_world
 import game_framework
-
+from bullet import Bullet
 # state event check
 # ( state event type, event value )
 
@@ -62,7 +62,10 @@ class Idle:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100/ 36 / 0.3
 
-
+        if witch.y >= 560:
+            witch.velocity = -10
+        if witch.y <= 40:
+            witch.jump()
 
     @staticmethod
     def draw(witch):
@@ -93,12 +96,16 @@ class Jump:
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
+
         if witch.velocity >= -100:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
         if witch.velocity <= 0:
             witch.state_machine.handle_event(('TIME_OUT', 0))
+
+        if witch.y >= 560:
+            witch.velocity = -10
 
     @staticmethod
     def draw(witch):
@@ -170,7 +177,7 @@ class StateMachine:
 
 class Witch:
     def __init__(self):
-        self.x, self.y = 150, 400
+        self.x, self.y = 250, 400
         self.frame = 0
         self.gravityaccel = 5
         self.velocity = 0
@@ -178,14 +185,14 @@ class Witch:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.ball_count = 10
-
+        self.cats_point ={}
 
     def fire_ball(self):
         if self.ball_count > 0:
             self.ball_count -= 1
-            ball = Ball(self.x, self.y, self.face_dir*10)
-            game_world.add_object(ball)
-            game_world.add_collision_pair('boss:bullet', None, ball)
+            bullet = Bullet(self.x, self.y, self.face_dir*10)
+            game_world.add_object(bullet)
+            game_world.add_collision_pair('boss:bullet', None, bullet)
 
     def jump(self):
         self.velocity = 35
@@ -212,6 +219,8 @@ class Witch:
            print("obstacle")
         if group == 'witch:r_potion':
             print("potion")
+        if group == 'witch:cat':
+            print("cat")
 
         if group == 'witch:boss':
             quit()
