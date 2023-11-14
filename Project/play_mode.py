@@ -8,6 +8,7 @@ from ball import Ball
 from potion import Potion
 from zombie import Zombie
 from obstacle import Obstacle
+from cat import Cat
 # boy = None
 
 def handle_events():
@@ -41,7 +42,10 @@ def init():
     for potion in potions:
         game_world.add_collision_pair('witch:r_potion', None, potion)
 
-
+    cats = [Cat(i) for i in range(1, 20, 2)]
+    game_world.add_objects(cats, 1)
+    for cat in cats:
+        game_world.add_collision_pair('witch:cat', None, cat)
 
 def finish():
     game_world.clear()
