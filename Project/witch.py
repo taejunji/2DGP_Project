@@ -66,12 +66,8 @@ class Idle:
 
         if witch.velocity >= -50:
             witch.updatespeed(FALL_SPEED_KMPH)
-
-
         witch.y += witch.velocity * 100/ 36 / 0.3 * game_framework.frame_time
-        print(witch.velocity)
 
-        print(witch.y)
 
 
     @staticmethod
@@ -84,7 +80,7 @@ class Jump:
 
     @staticmethod
     def enter(witch, e):
-        witch.savespeed = FALL_SPEED_KMPH
+        witch.savespeed = witch.velocity
         witch.frame = 0
 
     @staticmethod
@@ -102,23 +98,22 @@ class Jump:
     @staticmethod
     def do(witch):
 
-        if witch.frame<= 0:
-            witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if FALL_SPEED_KMPH >= -100: pass
+        if witch.velocity >= -60:
+            witch.updatespeed(FALL_SPEED_KMPH)
+        witch.y += witch.velocity * 100 / 36 / 0.3 * game_framework.frame_time
 
-
-        witch.y += FALL_SPEED_PPS * game_framework.frame_time
-
-        if witch.savespeed <= 0:
+        if witch.velocity <= 0:
             witch.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(witch):
-        if witch.frame == 0:
-            witch.image.clip_draw( 2 * 327, 323 * 2, 327, 323, witch.x, witch.y)
+        if witch.frame <= 1:
+            witch.image.clip_draw( 2 * 327, 323 * 1, 327, 323, witch.x, witch.y,100,100)
         else:
-            witch.image.clip_draw(0 * 327, 323 * 1, 327, 323, witch.x, witch.y)
+            witch.image.clip_draw( 1 * 327, 323 * 1, 327, 323, witch.x, witch.y,100,100)
+        print(witch.frame)
 
 
 class Sleep:
@@ -184,7 +179,7 @@ class Witch:
     def __init__(self):
         self.x, self.y = 100, 400
         self.frame = 0
-        self.gravityaccel = 0.05
+        self.gravityaccel = 0.1
         self.savespeed = 0
         self.velocity = 0
         self.image = load_image('image/witch.png')
