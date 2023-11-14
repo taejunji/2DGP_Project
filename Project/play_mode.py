@@ -1,14 +1,12 @@
 import random
-
 from pico2d import *
 import game_framework
-
 import game_world
-from grass import Grass
+from background import Background
 from witch import Witch
 from ball import Ball
 from zombie import Zombie
-
+from obstacle import Obstacle
 # boy = None
 
 def handle_events():
@@ -22,34 +20,18 @@ def handle_events():
             witch.handle_event(event)
 
 def init():
-    global grass
+    global background
     global witch
     global balls
+    global obstacles
     running = True
 
-    grass = Grass()
-    game_world.add_object(grass, 0)
+    background = Background()
+    game_world.add_object(background, 0)
 
     witch = Witch()
     game_world.add_object(witch, 1)
-    game_world.add_collision_pair('witch:ball', witch, None)
-
-
-
-    balls = [Ball(random.randint(100,1600-100),60,0)for _ in range(30)]
-    game_world.add_objects(balls,1)
-
-    # 여기
-    for ball in balls:
-        game_world.add_collision_pair('boy:ball',None, ball)
-
-    zombies = [Zombie() for _ in range(5)]
-    game_world.add_objects(zombies,1)
-
-    for zombie in zombies:
-        game_world.add_collision_pair('zombie:throwball', zombie, None)
-        game_world.add_collision_pair('boy:zombie', witch, zombie)
-
+    game_world.add_collision_pair('witch:obstacle', witch, None)
 
 
 def finish():
