@@ -4,9 +4,9 @@ import game_framework
 import game_world
 from background import Background
 from witch import Witch
-from ball import Ball
+from bullet import Bullet
 from potion import Potion
-from zombie import Zombie
+from Boss import Boss
 from obstacle import Obstacle
 from cat import Cat
 # boy = None
@@ -38,12 +38,12 @@ def init():
     game_world.add_collision_pair('witch:r_potion', witch, None)
     game_world.add_collision_pair('witch:cat', witch, None)
 
-    potions = [Potion(i) for i in range(1,40,3)]
+    potions = [Potion(i) for i in range(3,40,3)]
     game_world.add_objects(potions, 1)
     for potion in potions:
         game_world.add_collision_pair('witch:r_potion', None, potion)
 
-    cats = [Cat(i) for i in range(1, 40, 15)]
+    cats = [Cat(i,i/3) for i in range(1, 40, 3)]
     game_world.add_objects(cats, 1)
     for cat in cats:
         game_world.add_collision_pair('witch:cat', None, cat)
