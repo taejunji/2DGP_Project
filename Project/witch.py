@@ -113,7 +113,7 @@ class Jump:
             witch.image.clip_draw( 2 * 327, 323 * 1, 327, 323, witch.x, witch.y,100,100)
         else:
             witch.image.clip_draw( 1 * 327, 323 * 1, 327, 323, witch.x, witch.y,100,100)
-        print(witch.frame)
+
 
 
 class Sleep:
@@ -193,7 +193,7 @@ class Witch:
             self.ball_count -= 1
             ball = Ball(self.x, self.y, self.face_dir*10)
             game_world.add_object(ball)
-            game_world.add_collision_pair('zombie:throwball', None, ball)
+            game_world.add_collision_pair('boss:bullet', None, ball)
 
     def jump(self):
         self.velocity = 25
@@ -216,9 +216,12 @@ class Witch:
 
     def handle_collision(self,group, other):
         # 여기
-        if group == 'boy:ball':
-            self.ball_count += 1
-        if group == 'boy:zombie':
+        if group == 'witch:obstacle':
+           print("obstacle")
+        if group == 'witch:r_potion':
+            print("potion")
+
+        if group == 'witch:boss':
             quit()
             pass
 
