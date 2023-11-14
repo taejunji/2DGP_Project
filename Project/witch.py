@@ -177,7 +177,7 @@ class StateMachine:
 
 class Witch:
     def __init__(self):
-        self.x, self.y = 100, 400
+        self.x, self.y = 150, 400
         self.frame = 0
         self.gravityaccel = 0.1
         self.savespeed = 0
