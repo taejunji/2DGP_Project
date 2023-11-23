@@ -39,21 +39,19 @@ class Cat:
             Cat.images_fourth_cat = load_image("image/cat_4.png")
 
 
-    # 0 그린 1 블루 2레드
+
     def __init__(self,num,type):
-        self.type = int(type) #random.randint(0,2)
+        self.type = int(type)
         self.x = random.randint(800 * num + 850, 800 * num + 1200)
         self.y = random.randint(100, 500)
         self.load_images()
         self.frame = 0
         self.scale = 50
-        self.animation = True
+        self.animation = True # 위 아래 움직임
         self.animation_moved = 0
         self.confined = True
 
     def update(self):
-
-
 
         if(self.confined):
             self.frame = (self.frame + CONFINED_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % CONFINED_FRAMES_PER_ACTION
@@ -68,7 +66,6 @@ class Cat:
                 if Cat.vaild_cat_idx[i] == self.type:
                     self.y = (play_mode.witch.y - 30) - 30 * i +self.animation_moved
                     self.x = (play_mode.witch.x - 80) - 40 * i +self.animation_moved
-
 
         if self.animation == True:
             self.y += ANIMATION_SPEED_PPS * game_framework.frame_time
@@ -99,19 +96,19 @@ class Cat:
             if self.type == 0:
                 Cat.images_first_cat.clip_draw(int(self.frame) * 145, 180, 145, 180, self.x, self.y, self.scale,
                                                self.scale)
-                draw_rectangle(*self.get_bb())
+                # draw_rectangle(*self.get_bb())
             elif self.type == 1:
                 Cat.images_second_cat.clip_draw(int(self.frame) * 155, 171, 155, 171, self.x, self.y, self.scale,
                                                 self.scale)
-                draw_rectangle(*self.get_bb())
+                # draw_rectangle(*self.get_bb())
             elif self.type == 2:
                 Cat.images_third_cat.clip_draw(int(self.frame) * 150, 169, 150, 169, self.x, self.y, self.scale,
                                                self.scale)
-                draw_rectangle(*self.get_bb())
+                # draw_rectangle(*self.get_bb())
             elif self.type == 3:
                 Cat.images_fourth_cat.clip_draw(int(self.frame) * 147, 189, 147, 189, self.x, self.y, self.scale,
                                                 self.scale)
-                draw_rectangle(*self.get_bb())
+                # draw_rectangle(*self.get_bb())
     def handle_event(self, event):
         pass
     def handle_collision(self,group, other):

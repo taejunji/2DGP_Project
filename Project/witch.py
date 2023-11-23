@@ -17,6 +17,9 @@ def space_down(e):
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
+def hitted(e):
+    return e[0] == 'HIT'
+
 # time_out = lambda e : e[0] == 'TIME_OUT'
 
 
@@ -25,6 +28,12 @@ FALL_SPEED_KMPH = -10.0  # Km / Hour
 FALL_SPEED_MPM = (FALL_SPEED_KMPH * 1000.0 / 60.0)
 FALL_SPEED_MPS = (FALL_SPEED_MPM / 60.0)
 FALL_SPEED_PPS = (FALL_SPEED_MPS * PIXEL_PER_METER)
+
+
+ANIMATION_SPEED_KMPH = 5.0  # Km / Hour
+ANIMATION_SPEED_MPM = (ANIMATION_SPEED_KMPH * 1000.0 / 60.0)
+ANIMATION_SPEED_MPS = (ANIMATION_SPEED_MPM / 60.0)
+ANIMATION_SPEED_PPS = (ANIMATION_SPEED_MPS * PIXEL_PER_METER)
 
 # Boy Action Speed
 TIME_PER_ACTION = 0.5
@@ -73,6 +82,7 @@ class Idle:
 
 
 
+
 class Jump:
 
     @staticmethod
@@ -109,37 +119,64 @@ class Jump:
 
     @staticmethod
     def draw(witch):
-        if witch.frame <= 1:
+        if witch.frame <= 2:
             witch.image.clip_draw( 2 * 327, 323 * 1, 327, 323, witch.x, witch.y,100,100)
         else:
             witch.image.clip_draw( 1 * 327, 323 * 1, 327, 323, witch.x, witch.y,100,100)
 
 
 
-class Sleep:
+class Hitted:
 
     @staticmethod
     def enter(witch, e):
-        witch.frame = 0
+        if hitted(e):
+            witch.hitted = True
+            witch.frame = 0
+            witch.wait_time = get_time()
         pass
 
     @staticmethod
     def exit(witch, e):
+        if space_down(e):
+            witch.jump()
+
+        if time_out(e):
+            witch.wait_time = 0
+            witch.hitted = False
+            witch.x = 250
+
         pass
 
     @staticmethod
     def do(witch):
-        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
+        if witch.velocity >= -100:
+            witch.updatespeed()
+        witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
+        if witch.y >= 560:
+            witch.velocity = -10
+        if witch.y <= 40:
+            witch.jump()
+
+        if witch.animation == True:
+            witch.x += ANIMATION_SPEED_PPS * game_framework.frame_time
+            witch.animation_moved += ANIMATION_SPEED_PPS * game_framework.frame_time
+            if witch.animation_moved >= 4:
+                witch.animation = False
+        else:
+            witch.x -= ANIMATION_SPEED_PPS * game_framework.frame_time
+            witch.animation_moved -= ANIMATION_SPEED_PPS * game_framework.frame_time
+            if witch.animation_moved <= -4:
+                witch.animation = True
+
+        if get_time() - witch.wait_time > 2:
+            witch.state_machine.handle_event(('TIME_OUT', 0))
     @staticmethod
     def draw(witch):
-        if witch.face_dir == -1:
-            witch.image.clip_composite_draw(int(witch.frame) * 100, 200, 100, 100,
-                                          -3.141592 / 2, '', witch.x + 25, witch.y - 25, 100, 100)
-        else:
-            witch.image.clip_composite_draw(int(witch.frame) * 100, 300, 100, 100,
-                                          3.141592 / 2, '', witch.x - 25, witch.y - 25, 100, 100)
+        witch.image.clip_draw(int(witch.frame) * 327, 323 * 0, 327, 323, witch.x, witch.y , 100, 100)
 
 
 class StateMachine:
@@ -147,9 +184,9 @@ class StateMachine:
         self.witch = witch
         self.cur_state = Idle
         self.transitions = {
-            Idle: {space_down: Jump, control: Idle},
-            Jump: {control: Idle, time_out: Idle, space_down: Idle},
-
+            Idle: {space_down: Jump, control: Idle, hitted: Hitted},
+            Jump: {control: Idle, time_out: Idle, space_down: Jump, hitted: Hitted},
+            Hitted: {time_out: Idle,space_down: Hitted}
         }
 
     def start(self):
@@ -185,8 +222,11 @@ class Witch:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.ball_count = 10
-        self.cats_point ={}
-
+        self.wait_time = 0
+        self.hitted = False
+        self.animation = False
+        self.animation_moved = 0
+        self.hp = 5
     def fire_ball(self):
         if self.ball_count > 0:
             self.ball_count -= 1
@@ -207,21 +247,23 @@ class Witch:
 
     def draw(self):
         self.state_machine.draw()
-
         draw_rectangle(*self.get_bb()) # 튜플을 풀어해쳐서 분리해서 인자로 제공
-
+        print(self.hp)
     def get_bb(self):
         return self.x-40, self.y -50, self.x +20, self.y+30
 
     def handle_collision(self,group, other):
         # 여기
-        if group == 'witch:obstacle':
-           print("obstacle")
-        if group == 'witch:r_potion':
-            print("potion")
-        if group == 'witch:cat':
-            print("cat")
+        if group == 'witch:obstacle' and self.hitted == False:
+           self.state_machine.handle_event(('HIT', 0))
+           if self.hp > 0:
+               self.hp -= 1
 
+        if group == 'witch:r_potion' and self.hp < 6:
+            self.hp += 1
+
+        if group == 'witch:cat':
+            pass
         if group == 'witch:boss':
             quit()
             pass
