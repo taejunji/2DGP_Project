@@ -144,8 +144,8 @@ class Hitted:
         if time_out(e):
             witch.wait_time = 0
             witch.hitted = False
-            witch.x = 250
 
+        witch.x = 250
         pass
 
     @staticmethod
