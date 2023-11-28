@@ -172,7 +172,7 @@ class Hitted:
             if witch.animation_moved <= -4:
                 witch.animation = True
 
-        if get_time() - witch.wait_time > 2:
+        if get_time() - witch.wait_time > 2.5:
             witch.state_machine.handle_event(('TIME_OUT', 0))
     @staticmethod
     def draw(witch):

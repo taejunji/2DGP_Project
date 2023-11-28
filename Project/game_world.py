@@ -15,7 +15,6 @@ def update():
         for o in layer:
             o.update()
 
-
 def render():
     for layer in objects:
         for o in layer:

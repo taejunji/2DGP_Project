@@ -7,7 +7,7 @@ class Bullet:
 
     def __init__(self, x = 400, y = 300, velocity = 1):
         if Bullet.image == None:
-            Bullet.image = load_image('ball21x21.png')
+            Bullet.image = load_image('')
         self.x, self.y, self.velocity = x, y, velocity
 
     def draw(self):
