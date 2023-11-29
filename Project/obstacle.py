@@ -55,10 +55,10 @@ class Obstacle:
     def draw(self):
         if self.topbottom == 0:
             Obstacle.images_top.clip_draw(int(self.frame) * 256, 0, 256, 1500, self.x, self.y,100,self.scale_y)
-            draw_rectangle(*self.get_bb())
+            # draw_rectangle(*self.get_bb())
         else:
             Obstacle.images_bottom.clip_draw(int(self.frame) * 256, 0, 256, 1500, self.x, self.y, 100, self.scale_y)
-            draw_rectangle(*self.get_bb())
+            # draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         pass
