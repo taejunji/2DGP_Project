@@ -27,7 +27,6 @@ def init():
     global balls
     global obstacles
     global potions
-    running = True
 
     background = Background()
     game_world.add_object(background, 0)

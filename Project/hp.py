@@ -7,12 +7,9 @@ from pico2d import *
 class Hp:
     image = None
 
-
     def load_images(self):
         if Hp.image == None:
             Hp.image = load_image("image/heart.png")
-
-
 
     # 0 탑 1 바텀
     def __init__(self):

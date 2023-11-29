@@ -67,3 +67,24 @@ class Title_background:
 
     def get_bb(self):
         return 0, 0, 1600 - 1, 50
+
+class End_background:
+    def __init__(self):
+        self.image = load_image('image/End.png')
+        self.width = 1600
+        self.height = 600
+        self.x = 800
+        self.y = 300
+        self.check = False
+
+    def update(self):
+        pass
+
+    def draw(self):
+        self.image.clip_draw(0, 0, self.image.w, self.image.h,
+                             self.x, self.y,
+                             self.width, self.height)
+
+
+    def get_bb(self):
+        return 0, 0, 1600 - 1, 50

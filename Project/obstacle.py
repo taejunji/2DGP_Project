@@ -55,16 +55,17 @@ class Obstacle:
     def draw(self):
         if self.topbottom == 0:
             Obstacle.images_top.clip_draw(int(self.frame) * 256, 0, 256, 1500, self.x, self.y,100,self.scale_y)
-            # draw_rectangle(*self.get_bb())
+            draw_rectangle(*self.get_bb())
         else:
             Obstacle.images_bottom.clip_draw(int(self.frame) * 256, 0, 256, 1500, self.x, self.y, 100, self.scale_y)
-            # draw_rectangle(*self.get_bb())
+            draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         pass
     def handle_collision(self,group, other):
         if group == 'witch:obstacle':
+            print("x")
             pass
     def get_bb(self):
-        return self.x - 40, self.y-(self.scale_y/2), self.x + 40, self.y+self.scale_y/2
+        return self.x - 35, self.y-(self.scale_y/2 - 10), self.x + 35, self.y+(self.scale_y/2 - 10)
 

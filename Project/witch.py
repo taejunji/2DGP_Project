@@ -5,6 +5,7 @@ from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYU
 import game_world
 import game_framework
 from bullet import Bullet
+import End_mode
 # state event check
 # ( state event type, event value )
 
@@ -226,7 +227,7 @@ class Witch:
         self.hitted = False
         self.animation = False
         self.animation_moved = 0
-        self.hp = 5
+        self.hp = 3
     def fire_ball(self):
         if self.ball_count > 0:
             self.ball_count -= 1
@@ -241,6 +242,8 @@ class Witch:
 
     def update(self):
         self.state_machine.update()
+        if self.hp == 0:
+            game_framework.change_mode(End_mode)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
