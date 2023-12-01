@@ -31,10 +31,10 @@ class Obstacle:
     def __init__(self,num):
         self.topbottom = random.randint(0,1)
         self.x = random.randint(800 * num + 850, 800 * num + 1200)
-        self.scale_y = random.randint(300, 350)
+        self.scale_y = random.randint(400, 600)
 
         if self.topbottom == 0:
-            self.y = 600 - self.scale_y / 2
+            self.y = 800 - self.scale_y / 2
         else:
             self.y = self.scale_y / 2
 

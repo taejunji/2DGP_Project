@@ -41,6 +41,7 @@ class Cat:
 
 
     def __init__(self,num,type):
+        Cat.vaild_cat_idx = []
         self.type = int(type)
         self.x = random.randint(800 * num + 850, 800 * num + 1200)
         self.y = random.randint(100, 500)
@@ -50,6 +51,7 @@ class Cat:
         self.animation = True # 위 아래 움직임
         self.animation_moved = 0
         self.confined = True
+
 
     def update(self):
 

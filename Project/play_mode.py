@@ -34,15 +34,15 @@ def init():
     witch = Witch()
     game_world.add_object(witch, 1)
     game_world.add_collision_pair('witch:obstacle', witch, None)
-    game_world.add_collision_pair('witch:r_potion', witch, None)
+    game_world.add_collision_pair('witch:potion', witch, None)
     game_world.add_collision_pair('witch:cat', witch, None)
 
-    potions = [Potion(i) for i in range(3,40,3)]
+    potions = [Potion(i) for i in range(5,40,5)]
     game_world.add_objects(potions, 1)
     for potion in potions:
-        game_world.add_collision_pair('witch:r_potion', None, potion)
+        game_world.add_collision_pair('witch:potion', None, potion)
 
-    cats = [Cat(i,i/3) for i in range(1, 40, 3)]
+    cats = [Cat(i,i/5) for i in range(2, 40, 5)]
     game_world.add_objects(cats, 1)
     for cat in cats:
         game_world.add_collision_pair('witch:cat', None, cat)

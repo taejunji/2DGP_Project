@@ -21,6 +21,8 @@ def time_out(e):
 def hitted(e):
     return e[0] == 'HIT'
 
+def dead(e):
+    return e[0] == 'DEAD'
 # time_out = lambda e : e[0] == 'TIME_OUT'
 
 
@@ -65,6 +67,8 @@ class Idle:
 
     @staticmethod
     def do(witch):
+        if witch.hp == 0:
+            witch.state_machine.handle_event(('DEAD', 0))
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
@@ -72,7 +76,7 @@ class Idle:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100/ 36 / 0.3
 
-        if witch.y >= 560:
+        if witch.y >= 760:
             witch.velocity = -10
         if witch.y <= 40:
             witch.jump()
@@ -104,6 +108,8 @@ class Jump:
 
     @staticmethod
     def do(witch):
+        if witch.hp == 0:
+            witch.state_machine.handle_event(('DEAD', 0))
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
@@ -115,7 +121,7 @@ class Jump:
         if witch.velocity <= 0:
             witch.state_machine.handle_event(('TIME_OUT', 0))
 
-        if witch.y >= 560:
+        if witch.y >= 760:
             witch.velocity = -10
 
     @staticmethod
@@ -151,13 +157,17 @@ class Hitted:
 
     @staticmethod
     def do(witch):
+        if witch.hp == 0:
+            witch.state_machine.handle_event(('DEAD', 0))
+
+
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
         if witch.velocity >= -100:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
-        if witch.y >= 560:
+        if witch.y >= 760:
             witch.velocity = -10
         if witch.y <= 40:
             witch.jump()
@@ -179,15 +189,50 @@ class Hitted:
     def draw(witch):
         witch.image.clip_draw(int(witch.frame) * 327, 323 * 0, 327, 323, witch.x, witch.y , 100, 100)
 
+class Dead:
 
+    @staticmethod
+    def enter(witch, e):
+        witch.rad = 0
+        pass
+
+    @staticmethod
+    def exit(witch, e):
+        pass
+
+    @staticmethod
+    def do(witch):
+        witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+        witch.rad += 0.1
+        if witch.velocity >= -100:
+            witch.updatespeed()
+        witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
+
+        if witch.y >= 760:
+            witch.velocity = -10
+
+
+        if witch.animation == True:
+            witch.x += ANIMATION_SPEED_PPS * game_framework.frame_time
+            witch.animation_moved += ANIMATION_SPEED_PPS * game_framework.frame_time
+            if witch.animation_moved >= 4:
+                witch.animation = False
+
+
+        if witch.y < -100:
+            game_framework.change_mode(End_mode)
+    @staticmethod
+    def draw(witch):
+        witch.image.clip_composite_draw(int(witch.frame) * 327, 323 * 0, 327, 323,witch.rad,'' ,witch.x, witch.y , 100, 100)
 class StateMachine:
     def __init__(self, witch):
         self.witch = witch
         self.cur_state = Idle
         self.transitions = {
-            Idle: {space_down: Jump, control: Idle, hitted: Hitted},
-            Jump: {control: Idle, time_out: Idle, space_down: Jump, hitted: Hitted},
-            Hitted: {time_out: Idle,space_down: Hitted}
+            Idle: {space_down: Jump, control: Idle, hitted: Hitted,dead: Dead},
+            Jump: {control: Idle, time_out: Idle, space_down: Jump, hitted: Hitted,dead: Dead},
+            Hitted: {time_out: Idle,space_down: Hitted,dead: Dead},
+            Dead:{hitted: Dead}
         }
 
     def start(self):
@@ -228,6 +273,7 @@ class Witch:
         self.animation = False
         self.animation_moved = 0
         self.hp = 3
+        self.hp_image = load_image('image/heart.png')
     def fire_ball(self):
         if self.ball_count > 0:
             self.ball_count -= 1
@@ -242,8 +288,7 @@ class Witch:
 
     def update(self):
         self.state_machine.update()
-        if self.hp == 0:
-            game_framework.change_mode(End_mode)
+
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
@@ -252,6 +297,8 @@ class Witch:
         self.state_machine.draw()
         draw_rectangle(*self.get_bb()) # 튜플을 풀어해쳐서 분리해서 인자로 제공
         print(self.hp)
+        for a in range(0,self.hp):
+            self.hp_image.clip_draw(0, 0, 28, 27, 100 + 40 * a, 750, 30, 30)
     def get_bb(self):
         return self.x-40, self.y -50, self.x +20, self.y+30
 
@@ -262,8 +309,9 @@ class Witch:
            if self.hp > 0:
                self.hp -= 1
 
-        if group == 'witch:r_potion' and self.hp < 6:
-            self.hp += 1
+        if group == 'witch:potion' and self.hp < 3:
+            if other.type == 2:
+                self.hp += 1
 
         if group == 'witch:cat':
             pass

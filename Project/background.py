@@ -18,6 +18,7 @@ class Background:
         self.x = 800
         self.y = 400
         self.check = False
+        self.roof = 0
     def update(self):
         self.x -= RUN_SPEED_PPS * game_framework.frame_time
 
@@ -28,6 +29,7 @@ class Background:
             game_world.add_collision_pair('witch:obstacle', None, obstacle)
 
         if self.x <= -800:
+            self.roof += 1
             self.x = 800
             self.check = False
             obstacle = Obstacle(1)
@@ -41,7 +43,7 @@ class Background:
         self.image.clip_draw(0, 0, 3652, 2436,
                              self.x + self.width, self.y,
                              self.width, self.height)
-
+        print(self.roof)
 
     def get_bb(self):
         return 0, 0, 1600 - 1, 50
@@ -51,9 +53,9 @@ class Title_background:
     def __init__(self):
         self.image = load_image('image/start.png')
         self.width = 1600
-        self.height = 600
+        self.height = 800
         self.x = 800
-        self.y = 300
+        self.y = 400
         self.check = False
 
     def update(self):
@@ -72,9 +74,9 @@ class End_background:
     def __init__(self):
         self.image = load_image('image/End.png')
         self.width = 1600
-        self.height = 600
+        self.height = 800
         self.x = 800
-        self.y = 300
+        self.y = 400
         self.check = False
 
     def update(self):

@@ -61,11 +61,7 @@ class Potion:
     def handle_event(self, event):
         pass
     def handle_collision(self,group, other):
-        if group == 'witch:g_potion':
-            pass
-        if group == 'witch:b_potion':
-            pass
-        if group == 'witch:r_potion':
+        if group == 'witch:potion':
             game_world.remove_object(self)
     def get_bb(self):
         return self.x - 30, self.y - 35, self.x + 30, self.y+35
