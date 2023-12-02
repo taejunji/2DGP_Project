@@ -21,6 +21,10 @@ def handle_events():
 
 def init():
     global image
+    global score
+    global font
+    font = load_font('YJ_Obang_TTF.ttf', 100)
+    score = play_mode.background.score
     game_world.clear()
     image = End_background()
     game_world.add_object(image,0)
@@ -38,6 +42,7 @@ def update():
 def draw():
     clear_canvas()
     game_world.render()
+    font.draw(700, 450, f'{int(score)}', (255, 255, 255))
     update_canvas()
 
 def pause():

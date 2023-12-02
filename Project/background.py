@@ -20,9 +20,11 @@ class Background:
         self.obstacle_check = False
         self.potion_check = False
         self.roof = 0
+        self.score = 0
+        self.font = load_font('YJ_Obang_TTF.ttf',32)
     def update(self):
         self.x -= RUN_SPEED_PPS * game_framework.frame_time
-
+        self.score += RUN_SPEED_MPS * game_framework.frame_time
         if self.x <=0 and self.obstacle_check == False:
             self.obstacle_check = True
             obstacle = Obstacle(1)
@@ -53,8 +55,8 @@ class Background:
         self.image.clip_draw(0, 0, 3652, 2436,
                              self.x + self.width, self.y,
                              self.width, self.height)
-        print(self.roof)
-
+        self.font.draw(1400, 750, f'Score : {int(self.score)}', (200, 0, 255))
+        print(self.score)
     def get_bb(self):
         return 0, 0, 1600 - 1, 50
 
@@ -82,7 +84,7 @@ class Title_background:
 
 class End_background:
     def __init__(self):
-        self.image = load_image('image/End.png')
+        self.image = load_image('image/Score .png')
         self.width = 1600
         self.height = 800
         self.x = 800

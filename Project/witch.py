@@ -72,7 +72,7 @@ class Idle:
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if witch.velocity >= -100:
+        if witch.velocity >= -130:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100/ 36 / 0.3
 
@@ -113,8 +113,7 @@ class Jump:
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-
-        if witch.velocity >= -100:
+        if witch.velocity >= -130:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
@@ -163,7 +162,7 @@ class Hitted:
 
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
 
-        if witch.velocity >= -100:
+        if witch.velocity >= -130:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
@@ -204,7 +203,7 @@ class Dead:
     def do(witch):
         witch.frame = (witch.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
         witch.rad += 0.1
-        if witch.velocity >= -100:
+        if witch.velocity >= -130:
             witch.updatespeed()
         witch.y += witch.velocity * game_framework.frame_time * 100 / 36 / 0.3
 
@@ -262,7 +261,7 @@ class Witch:
     def __init__(self):
         self.x, self.y = 250, 400
         self.frame = 0
-        self.gravityaccel = 5
+        self.gravityaccel = 8
         self.velocity = 0
         self.image = load_image('image/witch.png')
         self.state_machine = StateMachine(self)
@@ -272,7 +271,7 @@ class Witch:
         self.hitted = False
         self.animation = False
         self.animation_moved = 0
-        self.hp = 3
+        self.hp = 1
         self.hp_image = load_image('image/heart.png')
     def fire_ball(self):
         if self.ball_count > 0:
@@ -282,7 +281,7 @@ class Witch:
             game_world.add_collision_pair('boss:bullet', None, bullet)
 
     def jump(self):
-        self.velocity = 35
+        self.velocity = 40
     def updatespeed(self):
         self.velocity -= self.gravityaccel * game_framework.frame_time * 100/ 36 / 0.3
 
@@ -298,7 +297,7 @@ class Witch:
         draw_rectangle(*self.get_bb()) # 튜플을 풀어해쳐서 분리해서 인자로 제공
         print(self.hp)
         for a in range(0,self.hp):
-            self.hp_image.clip_draw(0, 0, 28, 27, 100 + 40 * a, 750, 30, 30)
+            self.hp_image.clip_draw(0, 0, 28, 27, 30 + 40 * a, 750, 30, 30)
     def get_bb(self):
         return self.x-40, self.y -50, self.x +20, self.y+30
 
