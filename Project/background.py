@@ -2,7 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 from obstacle import Obstacle
-
+from potion import Potion
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 RUN_SPEED_KMPH = 35.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -17,13 +17,14 @@ class Background:
         self.height = 800
         self.x = 800
         self.y = 400
-        self.check = False
+        self.obstacle_check = False
+        self.potion_check = False
         self.roof = 0
     def update(self):
         self.x -= RUN_SPEED_PPS * game_framework.frame_time
 
-        if self.x <=0 and self.check == False:
-            self.check = True
+        if self.x <=0 and self.obstacle_check == False:
+            self.obstacle_check = True
             obstacle = Obstacle(1)
             game_world.add_object(obstacle)
             game_world.add_collision_pair('witch:obstacle', None, obstacle)
@@ -31,10 +32,19 @@ class Background:
         if self.x <= -800:
             self.roof += 1
             self.x = 800
-            self.check = False
+            self.obstacle_check = False
             obstacle = Obstacle(1)
             game_world.add_object(obstacle)
             game_world.add_collision_pair('witch:obstacle', None, obstacle)
+
+        if self.roof % 8 == 3 and self.potion_check == False:
+            self.potion_check = True
+            potion = Potion()
+            game_world.add_object(potion)
+            game_world.add_collision_pair('witch:potion', None, potion)
+        elif self.roof % 8 != 3 : self.potion_check = False
+
+
 
     def draw(self):
         self.image.clip_draw(0,0,3652,2436,

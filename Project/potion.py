@@ -30,9 +30,9 @@ class Potion:
 
 
     # 0 그린 1 블루 2레드
-    def __init__(self,num):
+    def __init__(self):
         self.type = 2 #random.randint(0,2)
-        self.x = random.randint(800 * num + 850, 800 * num + 1200)
+        self.x = random.randint(800 + 850, 800 + 1200)
         self.y = random.randint(100, 500)
         self.load_images()
         self.frame = 0

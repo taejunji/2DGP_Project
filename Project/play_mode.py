@@ -37,12 +37,12 @@ def init():
     game_world.add_collision_pair('witch:potion', witch, None)
     game_world.add_collision_pair('witch:cat', witch, None)
 
-    potions = [Potion(i) for i in range(5,40,5)]
-    game_world.add_objects(potions, 1)
-    for potion in potions:
-        game_world.add_collision_pair('witch:potion', None, potion)
+    # potions = [Potion(i) for i in range(5,10,5)]
+    # game_world.add_objects(potions, 1)
+    # for potion in potions:
+    #     game_world.add_collision_pair('witch:potion', None, potion)
 
-    cats = [Cat(i,i/5) for i in range(2, 40, 5)]
+    cats = [Cat(i, i/10) for i in range(2, 40, 10)]
     game_world.add_objects(cats, 1)
     for cat in cats:
         game_world.add_collision_pair('witch:cat', None, cat)
