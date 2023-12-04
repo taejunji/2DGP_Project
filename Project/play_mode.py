@@ -9,7 +9,7 @@ from potion import Potion
 from Boss import Boss
 from obstacle import Obstacle
 from cat import Cat
-from hp import Hp
+from Coin import Coin
 
 def handle_events():
     events = get_events()
@@ -36,6 +36,8 @@ def init():
     game_world.add_collision_pair('witch:obstacle', witch, None)
     game_world.add_collision_pair('witch:potion', witch, None)
     game_world.add_collision_pair('witch:cat', witch, None)
+    game_world.add_collision_pair('witch:coin',  witch, None)
+    game_world.add_collision_pair('witch:monster', witch, None)
 
     # potions = [Potion(i) for i in range(5,10,5)]
     # game_world.add_objects(potions, 1)
@@ -46,7 +48,8 @@ def init():
     game_world.add_objects(cats, 1)
     for cat in cats:
         game_world.add_collision_pair('witch:cat', None, cat)
-    hp = Hp()
+        game_world.add_collision_pair('cat:obstacle', cat, None)
+
 
 def finish():
     game_world.clear()

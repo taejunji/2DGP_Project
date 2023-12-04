@@ -1,11 +1,12 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
 
 from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LCTRL, SDLK_RIGHT, \
-    draw_rectangle
+    draw_rectangle, load_wav
 import game_world
 import game_framework
 from bullet import Bullet
 import End_mode
+import play_mode
 # state event check
 # ( state event type, event value )
 
@@ -140,6 +141,7 @@ class Hitted:
             witch.hitted = True
             witch.frame = 0
             witch.wait_time = get_time()
+            witch.hit_sound.play()
         pass
 
     @staticmethod
@@ -193,6 +195,7 @@ class Dead:
     @staticmethod
     def enter(witch, e):
         witch.rad = 0
+
         pass
 
     @staticmethod
@@ -258,6 +261,11 @@ class StateMachine:
 
 
 class Witch:
+    cat_sound = None
+    coin_sound = None
+    hit_sound = None
+    potion_sound = None
+    jump_sound = None
     def __init__(self):
         self.x, self.y = 250, 400
         self.frame = 0
@@ -271,8 +279,22 @@ class Witch:
         self.hitted = False
         self.animation = False
         self.animation_moved = 0
-        self.hp = 1
+        self.hp = 3
         self.hp_image = load_image('image/heart.png')
+        if not Witch.potion_sound:
+            Witch.cat_sound = load_wav('sound/cateatsound.wav')
+            Witch.coin_sound = load_wav('sound/coinsound.wav')
+            Witch.hit_sound = load_wav('sound/hitsound.wav')
+            Witch.potion_sound = load_wav('sound/potionsound.wav')
+            Witch.jump_sound = load_wav('sound/jump_2.wav')
+
+            Witch.cat_sound.set_volume(32)
+
+            Witch.coin_sound.set_volume(32)
+            Witch.hit_sound.set_volume(32)
+            Witch.potion_sound.set_volume(32)
+            Witch.jump_sound.set_volume(32)
+
     def fire_ball(self):
         if self.ball_count > 0:
             self.ball_count -= 1
@@ -282,6 +304,7 @@ class Witch:
 
     def jump(self):
         self.velocity = 40
+        self.jump_sound.play()
     def updatespeed(self):
         self.velocity -= self.gravityaccel * game_framework.frame_time * 100/ 36 / 0.3
 
@@ -308,13 +331,21 @@ class Witch:
            if self.hp > 0:
                self.hp -= 1
 
+        if group == 'witch:monster' and self.hitted == False:
+            self.state_machine.handle_event(('HIT', 0))
+            if self.hp > 0:
+                self.hp -= 1
+
         if group == 'witch:potion' and self.hp < 3:
             if other.type == 2:
                 self.hp += 1
+                self.potion_sound.play()
 
         if group == 'witch:cat':
-            pass
-        if group == 'witch:boss':
-            quit()
+            self.cat_sound.play()
+
+        if group == 'witch:coin':
+            play_mode.background.score += 100
+            self.coin_sound.play()
             pass
 

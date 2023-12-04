@@ -12,26 +12,21 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # potion Action Speed
-TIME_PER_ACTION = 0.8
+TIME_PER_ACTION = 0.3
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 4.0
 
-class Potion:
-    images_green = None
-    images_blue = None
-    images_red = None
+class Coin:
+    images = None
+
     def load_images(self):
-        if Potion.images_green == None:
-            Potion.images_green = load_image("image/item_1.png")
-        if Potion.images_blue == None:
-            Potion.images_blue = load_image("image/item_2.png")
-        if Potion.images_red == None:
-            Potion.images_red = load_image("image/item_3.png")
+        if Coin.images == None:
+            Coin.images = load_image("image/Coin.png")
+
 
 
     # 0 그린 1 블루 2레드
     def __init__(self):
-        self.type = 2 #random.randint(0,2)
         self.x = random.randint(800 + 850, 800 + 1200)
         self.y = random.randint(100, 500)
         self.load_images()
@@ -49,21 +44,14 @@ class Potion:
 
 
     def draw(self):
-        if self.type == 0:
-            Potion.images_green.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y,self.scale,self.scale)
-            draw_rectangle(*self.get_bb())
-        elif self.type == 1:
-            Potion.images_blue.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y, self.scale, self.scale)
-            draw_rectangle(*self.get_bb())
-        else :
-            Potion.images_red.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y, self.scale,self.scale)
+            Coin.images.clip_draw(int(self.frame) % 4 * 256, int(self.frame) // 4, 256, 256, self.x, self.y,self.scale,self.scale)
             draw_rectangle(*self.get_bb())
     def handle_event(self, event):
         pass
     def handle_collision(self,group, other):
-        if group == 'witch:potion':
+        if group == 'witch:coin':
             game_world.remove_object(self)
-        if group == 'potion:obstacle':
+        if group == 'coin:obstacle':
             self.x += 50
     def get_bb(self):
         return self.x - 30, self.y - 35, self.x + 30, self.y+35

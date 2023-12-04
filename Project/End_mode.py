@@ -28,7 +28,8 @@ def init():
     game_world.clear()
     image = End_background()
     game_world.add_object(image,0)
-
+    play_mode.background.bgm.stop()
+    End_background.dead_sound.play()
 
 def finish():
     game_world.clear()

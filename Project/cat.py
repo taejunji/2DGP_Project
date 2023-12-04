@@ -66,8 +66,8 @@ class Cat:
             self.frame = (self.frame + FREE_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FREE_FRAMES_PER_ACTION
             for i in range(len(Cat.vaild_cat_idx)):
                 if Cat.vaild_cat_idx[i] == self.type:
-                    self.y = (play_mode.witch.y - 30) - 30 * i +self.animation_moved
-                    self.x = (play_mode.witch.x - 80) - 40 * i +self.animation_moved
+                    self.y = (play_mode.witch.y - 20) #- 30 * i +self.animation_moved
+                    self.x = (play_mode.witch.x - 70) - 50 * i +self.animation_moved
 
         if self.animation == True:
             self.y += ANIMATION_SPEED_PPS * game_framework.frame_time
@@ -122,6 +122,8 @@ class Cat:
             self.confined = False
             self.frame = 0
             game_world.remove_collision_object(self)
+        if group == 'cat:obstacle':
+            self.x += 50
 
     def get_bb(self):
         return self.x - 30, self.y - 35, self.x + 30, self.y+35

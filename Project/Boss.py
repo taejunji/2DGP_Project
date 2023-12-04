@@ -1,10 +1,10 @@
 import random
-import math
+
 import game_framework
 import game_world
 from pico2d import *
 
-# zombie Run Speed
+
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 RUN_SPEED_KMPH = 10.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -16,7 +16,7 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 10.0
 
-animation_names = ['Walk']
+
 
 class Boss:
     images = None
@@ -24,8 +24,7 @@ class Boss:
     def load_images(self):
         if Boss.images == None:
             Boss.images = {}
-            for name in animation_names:
-                Boss.images[name] = [load_image("./zombie/" + name + " (%d)" % i + ".png") for i in range(1, 11)]
+
 
     def __init__(self):
         self.x, self.y = random.randint(1600-800, 1600), 150
