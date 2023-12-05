@@ -51,13 +51,13 @@ class Potion:
     def draw(self):
         if self.type == 0:
             Potion.images_green.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y,self.scale,self.scale)
-            draw_rectangle(*self.get_bb())
+            # draw_rectangle(*self.get_bb())
         elif self.type == 1:
             Potion.images_blue.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y, self.scale, self.scale)
-            draw_rectangle(*self.get_bb())
+            # draw_rectangle(*self.get_bb())
         else :
             Potion.images_red.clip_draw(int(self.frame)%2 * 256, int(self.frame)// 2, 256, 256, self.x, self.y, self.scale,self.scale)
-            draw_rectangle(*self.get_bb())
+            # draw_rectangle(*self.get_bb())
     def handle_event(self, event):
         pass
     def handle_collision(self,group, other):

@@ -45,7 +45,7 @@ class Coin:
 
     def draw(self):
             Coin.images.clip_draw(int(self.frame) % 4 * 256, int(self.frame) // 4, 256, 256, self.x, self.y,self.scale,self.scale)
-            draw_rectangle(*self.get_bb())
+            #draw_rectangle(*self.get_bb())
     def handle_event(self, event):
         pass
     def handle_collision(self,group, other):

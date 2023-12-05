@@ -66,7 +66,7 @@ class Cat:
             self.frame = (self.frame + FREE_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FREE_FRAMES_PER_ACTION
             for i in range(len(Cat.vaild_cat_idx)):
                 if Cat.vaild_cat_idx[i] == self.type:
-                    self.y = (play_mode.witch.y - 20) #- 30 * i +self.animation_moved
+                    self.y = (play_mode.witch.y - 40) #- 30 * i +self.animation_moved
                     self.x = (play_mode.witch.x - 70) - 50 * i +self.animation_moved
 
         if self.animation == True:
@@ -84,16 +84,16 @@ class Cat:
         if self.confined:
             if  self.type == 0:
                 Cat.images_first_cat.clip_draw(int(self.frame+1) * 145, 0, 145, 180, self.x, self.y,self.scale, self.scale)
-                draw_rectangle(*self.get_bb())
+                #draw_rectangle(*self.get_bb())
             elif self.type == 1:
                 Cat.images_second_cat.clip_draw(int(self.frame+1) * 155, 0, 155, 171, self.x, self.y, self.scale, self.scale)
-                draw_rectangle(*self.get_bb())
+                #draw_rectangle(*self.get_bb())
             elif self.type == 2:
                 Cat.images_third_cat.clip_draw(int(self.frame + 1) * 150, 0, 150, 169, self.x, self.y, self.scale,self.scale)
-                draw_rectangle(*self.get_bb())
+               # draw_rectangle(*self.get_bb())
             elif self.type == 3 :
                 Cat.images_fourth_cat.clip_draw(int(self.frame + 1) * 147, 0, 147, 189, self.x, self.y, self.scale,self.scale)
-                draw_rectangle(*self.get_bb())
+                #draw_rectangle(*self.get_bb())
         else:
             if self.type == 0:
                 Cat.images_first_cat.clip_draw(int(self.frame) * 145, 180, 145, 180, self.x, self.y, self.scale,

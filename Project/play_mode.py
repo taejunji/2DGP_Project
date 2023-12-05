@@ -44,7 +44,7 @@ def init():
     # for potion in potions:
     #     game_world.add_collision_pair('witch:potion', None, potion)
 
-    cats = [Cat(i, i/10) for i in range(2, 40, 10)]
+    cats = [Cat(i, i/5) for i in range(3, 25, 5)]
     game_world.add_objects(cats, 1)
     for cat in cats:
         game_world.add_collision_pair('witch:cat', None, cat)
@@ -59,6 +59,9 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
+
+
+
 
 def draw():
     clear_canvas()
