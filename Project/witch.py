@@ -372,9 +372,10 @@ class Witch:
                 self.hp -= 1
 
         if group == 'witch:potion' and self.hp < 3:
+            self.potion_sound.play()
             if other.type == 2:
                 self.hp += 1
-                self.potion_sound.play()
+
 
         if group == 'witch:cat':
             self.cat_sound.play()
