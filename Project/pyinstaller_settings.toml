@@ -3,11 +3,11 @@ main_file = 'main.py'
 
 # 데이타 파일들을 지정하세요.
 data_files = [
-
+   'YJ_Obang_TTF.ttf'
 ]
 
 # 데이타가 들어있는 폴더들을 지정하세요.
 data_folders = [
-   'image',
+   'image','sound'
 ]
 
